@@ -1,7 +1,8 @@
 const userInterface = document.querySelector('.grid-container');
 const buttons = userInterface.querySelectorAll('button');
-buttons.forEach(button => button.addEventListener('click', displayInput));
+
 buttons.forEach(button => button.addEventListener('click', operate));
+const numbers = userInterface.querySelectorAll('.number');
 const equals = userInterface.querySelector('#equals');
 const multi = userInterface.querySelector('#multi');
 const divis = userInterface.querySelector('#divis');
@@ -45,23 +46,14 @@ function precisionRound(number, precision) {
     return Math.round(number * factor) / factor;
 }
 
-function displayInput(){
+
+
+function operate(){
+   
     if (i_o){
         display.textContent = '';
     }
     i_o = false;
-    // if (this.textContent === 'backspace'){
-    //     display.textContent = display.textContent.substring(0, display.textContent.length-1);
-    // }
-
-    // else {
-    // display.textContent += this.textContent;
-    // }
-    
-}
-
-function operate(){
-   
     lastInputMadeEmpty = false;
 
     if(this.textContent === 'clear'){
@@ -70,12 +62,13 @@ function operate(){
         operant2 = '';
         operantNext = '';
         firstNumberCaptured = false;
-        
+        firstNumberCapturedForReal = false;
         secondNumberCaptured = false;
+        secondNumberCapturedForReal = false;
         operator1 = '';
         operator2 = '';
         operatorNext = '';
-
+        lastInputMadeEmpty = false;
         tempResult = 0;
         firstCalcEvaluated = false;
         round = 0;
@@ -85,6 +78,7 @@ function operate(){
         divis.setAttribute('disabled', '');
         add.setAttribute('disabled', '');
         sub.setAttribute('disabled', '');
+        equals.setAttribute('disabled', '');
         return;
     }
     if(!firstNumberCaptured){
@@ -97,6 +91,11 @@ function operate(){
                 operant1 += this.textContent;
                 display.textContent = operant1; 
             }
+
+           
+            
+
+            
                 
             multi.removeAttribute('disabled');  
             divis.removeAttribute('disabled'); 
@@ -109,6 +108,9 @@ function operate(){
             else if (commaSet){
                 comma.setAttribute('disabled', '');
             }
+
+            
+
             if (this.textContent === 'backspace'){
                 if (operant1.slice(-1) === '.'){
                     commaSet = false;
@@ -123,7 +125,7 @@ function operate(){
                     divis.setAttribute('disabled', '');
                     add.setAttribute('disabled', '');
                     sub.setAttribute('disabled', '');
-                    
+                    numbers.forEach(number => number.removeAttribute('disabled'));
                     comma.setAttribute('disabled', '');
                     lastInputMadeEmpty = true;
                     
@@ -131,6 +133,30 @@ function operate(){
 
                 
                 display.textContent = operant1;
+            }
+            
+            if ((operant1.slice(0, 1) === '0') && (operant1.length === 1)){
+                console.log('alert1');
+                numbers.forEach(number => number.setAttribute('disabled', ''));
+            }
+            else if (operant1.slice(1, 2) === '.'){
+                numbers.forEach(number => number.removeAttribute('disabled'));
+                console.log('alert2');
+            }
+            
+            
+            if (operant1.slice(-1) === '.'){
+                equals.setAttribute('disabled', '');
+                multi.setAttribute('disabled', '');
+                divis.setAttribute('disabled', '');
+                add.setAttribute('disabled', '');
+                sub.setAttribute('disabled', '');
+            }
+            else if (operant1 !== ''){
+                multi.removeAttribute('disabled');  
+                divis.removeAttribute('disabled'); 
+                add.removeAttribute('disabled'); 
+                sub.removeAttribute('disabled');
             }
 
         }
@@ -140,6 +166,7 @@ function operate(){
             add.setAttribute('disabled', '');
             sub.setAttribute('disabled', '');
             comma.setAttribute('disabled', '');
+            numbers.forEach(number => number.removeAttribute('disabled'));
             commaSet = false;
             operator1 = this.textContent;   
             firstNumberCaptured = true;
@@ -174,6 +201,8 @@ function operate(){
                 operant2 += this.textContent;
                 display.textContent = operant1 + operator1 + operant2;
             }
+
+            
            
             equals.removeAttribute('disabled');
             multi.removeAttribute('disabled');
@@ -188,6 +217,10 @@ function operate(){
                 comma.setAttribute('disabled', '');
  
             }
+            
+           
+            
+            
             if (this.textContent === 'backspace'){
                 if (operant2.slice(-1) === '.'){
                     commaSet = false;
@@ -202,8 +235,32 @@ function operate(){
                     add.setAttribute('disabled', '');
                     sub.setAttribute('disabled', '');
                     comma.setAttribute('disabled', '');
+                    numbers.forEach(number => number.removeAttribute('disabled'));
                 }
                 display.textContent = operant1 + operator1 + operant2;
+            }
+            
+            if ((operant2.slice(0, 1) === '0') && (operant2.length === 1)){
+                console.log('alert1');
+                numbers.forEach(number => number.setAttribute('disabled', ''));
+            }
+            else if (operant2.slice(1, 2) === '.'){
+                numbers.forEach(number => number.removeAttribute('disabled'));
+                console.log('alert2');
+            }
+            
+            if (operant2.slice(-1) === '.'){
+                equals.setAttribute('disabled', '');
+                multi.setAttribute('disabled', '');
+                divis.setAttribute('disabled', '');
+                add.setAttribute('disabled', '');
+                sub.setAttribute('disabled', '');
+            }
+            else if (operant2 !== '') {
+                multi.removeAttribute('disabled');  
+                divis.removeAttribute('disabled'); 
+                add.removeAttribute('disabled'); 
+                sub.removeAttribute('disabled');
             }
         }
         
@@ -216,6 +273,7 @@ function operate(){
             add.setAttribute('disabled', '');
             sub.setAttribute('disabled', '');
             comma.setAttribute('disabled', '');
+            numbers.forEach(number => number.removeAttribute('disabled'));
             commaSet = false;
             display.textContent += operator2;
         }
@@ -229,8 +287,33 @@ function operate(){
         secondNumberCapturedForReal = true;
     
         if (operator1 === '/'){
+            
             tempResult = +operant1 / (+operant2);
-
+            if (tempResult === Infinity){
+                display.textContent = 'Zero Division Error';
+                operant1 = '';
+                operant2 = '';
+                operantNext = '';
+                firstNumberCaptured = false;
+                firstNumberCapturedForReal = false;
+                secondNumberCaptured = false;
+                secondNumberCapturedForReal = false;
+                operator1 = '';
+                operator2 = '';
+                operatorNext = '';
+                lastInputMadeEmpty = false;
+                tempResult = 0;
+                firstCalcEvaluated = false;
+                round = 0;
+                commaSet = false;
+                comma.setAttribute('disabled', '');
+                multi.setAttribute('disabled', '');
+                divis.setAttribute('disabled', '');
+                add.setAttribute('disabled', '');
+                sub.setAttribute('disabled', '');
+                equals.setAttribute('disabled', '');
+                return;
+            }
         }
         else if (operator1 === 'x'){
             tempResult = +operant1 * (+operant2);
@@ -293,6 +376,7 @@ function operate(){
                 operantNext += this.textContent;
                 
             }
+            
             equals.removeAttribute('disabled');
             multi.removeAttribute('disabled');
             divis.removeAttribute('disabled');
@@ -320,16 +404,39 @@ function operate(){
                     add.setAttribute('disabled', '');
                     sub.setAttribute('disabled', '');
                     comma.setAttribute('disabled', '');
+                    numbers.forEach(number => number.removeAttribute('disabled'));
                 }
                 
                 
                 display.textContent = tempResult + operatorLast + operantNext;
             }
             
+            if ((operantNext.slice(0, 1) === '0') && (operantNext.length === 1)){
+                numbers.forEach(number => number.setAttribute('disabled', ''));
+            }
+            else if (operantNext.slice(1, 2) === '.'){
+                numbers.forEach(number => number.removeAttribute('disabled'));
+            }
+
+            if (operantNext.slice(-1) === '.'){
+                equals.setAttribute('disabled', '');
+                multi.setAttribute('disabled', '');
+                divis.setAttribute('disabled', '');
+                add.setAttribute('disabled', '');
+                sub.setAttribute('disabled', '');
+            }
+            else if (operantNext !== ''){
+                multi.removeAttribute('disabled');  
+                divis.removeAttribute('disabled'); 
+                add.removeAttribute('disabled'); 
+                sub.removeAttribute('disabled');
+            }
+            
             display.textContent = tempResult + operatorNext + operantNext;
         }
         else {
             operatorNext = this.textContent;
+            numbers.forEach(number => number.removeAttribute('disabled'));
             equals.setAttribute('disabled', ''); 
             multi.setAttribute('disabled', '');
             divis.setAttribute('disabled', '');
@@ -340,7 +447,31 @@ function operate(){
                 
                 if (operator2 === '/'){
                     tempResult = tempResult / (+operantNext);
-        
+                    if (tempResult === Infinity){
+                        display.textContent = 'Zero Division Error';
+                        operant1 = '';
+                        operant2 = '';
+                        operantNext = '';
+                        firstNumberCaptured = false;
+                        firstNumberCapturedForReal = false;
+                        secondNumberCaptured = false;
+                        secondNumberCapturedForReal = false;
+                        operator1 = '';
+                        operator2 = '';
+                        operatorNext = '';
+                        lastInputMadeEmpty = false;
+                        tempResult = 0;
+                        firstCalcEvaluated = false;
+                        round = 0;
+                        commaSet = false;
+                        comma.setAttribute('disabled', '');
+                        multi.setAttribute('disabled', '');
+                        divis.setAttribute('disabled', '');
+                        add.setAttribute('disabled', '');
+                        sub.setAttribute('disabled', '');
+                        equals.setAttribute('disabled', '');
+                        return;
+                    }
                 }
                 else if (operator2 === 'x'){
                     tempResult = tempResult * (+operantNext);
@@ -384,7 +515,31 @@ function operate(){
                 
                 if (operatorLast === '/'){
                     tempResult = tempResult / (+operantNext);
-        
+                    if (tempResult === Infinity){
+                        display.textContent = 'Zero Division Error';
+                        operant1 = '';
+                        operant2 = '';
+                        operantNext = '';
+                        firstNumberCaptured = false;
+                        firstNumberCapturedForReal = false;
+                        secondNumberCaptured = false;
+                        secondNumberCapturedForReal = false;
+                        operator1 = '';
+                        operator2 = '';
+                        operatorNext = '';
+                        lastInputMadeEmpty = false;
+                        tempResult = 0;
+                        firstCalcEvaluated = false;
+                        round = 0;
+                        commaSet = false;
+                        comma.setAttribute('disabled', '');
+                        multi.setAttribute('disabled', '');
+                        divis.setAttribute('disabled', '');
+                        add.setAttribute('disabled', '');
+                        sub.setAttribute('disabled', '');
+                        equals.setAttribute('disabled', '');
+                        return;
+                    }
                 }
                 else if (operatorLast === 'x'){
                     tempResult = tempResult * (+operantNext);
@@ -449,3 +604,23 @@ function buttonStandard(){
 buttons.forEach(button => button.addEventListener('mouseover', buttonHover));
 buttons.forEach(button => button.addEventListener('mouseout', buttonStandard));
 
+window.addEventListener('keydown', function(e){
+    
+    if(!e.shiftKey){
+    
+    const key = document.querySelector(`.grid-item[data-key = "${e.keyCode}"]`);
+    if (key === null)return;
+    key.click();
+    }
+    else {
+        const key = document.querySelector(`.grid-item[data-key = "${e.keyCode}"]`);
+        if(e.keyCode === 55){
+            divis.click();
+        }
+        else if (e.keyCode === 48){
+            equals.click();
+        }
+    }
+    
+    
+  });
