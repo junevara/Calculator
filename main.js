@@ -12,7 +12,7 @@ const comma = userInterface.querySelector('#comma');
 
 const display = userInterface.querySelector('.display');
 
-
+buttons.forEach(button => button.addEventListener('click', buttonStandard));
 
 let operant1 = '';
 let operant2 = '';
@@ -601,8 +601,11 @@ function buttonStandard(){
 }
 
 
+
 buttons.forEach(button => button.addEventListener('mouseover', buttonHover));
 buttons.forEach(button => button.addEventListener('mouseout', buttonStandard));
+
+
 
 window.addEventListener('keydown', function(e){
     
